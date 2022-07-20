@@ -15,11 +15,29 @@ router.get("/", (req, res) => {
 router.get("/:code", (req, res) => {
     try {
         const { code } = req.params;
-        const results = await db.query('SELECT code, name, description FROM companies WHERE code = "$1"', [code]);
+        const results = await db.query(
+            `SELECT code, name, description, id, comp_code, amt, paid, add_date, paid_date 
+            FROM companies
+            INNER JOIN invoices ON code = comp_code;
+            WHERE code = "$1"`,
+            [code]);
         if (results.rows.length === 0) {
             throw new ExpressError(`No company found with code: ${code}`, 404);
         }
-        return res.json({ company: results.rows[0] });
+        const data = results.rows[0];
+        const company = {
+            code: data.code,
+            name: data.name,
+            description: data.description,
+            invoices: {
+                id: data.id,
+                amt: data.amt,
+                paid: data.paid,
+                add_date: data.add_date,
+                paid_data: data.paid_data
+            }
+        }
+        return res.json({ "company": company });
     } catch (e) {
         return next(e);
     }
@@ -63,7 +81,7 @@ router.delete("/:code", (req, res) => {
     try {
         const { code } = req.params;
         const results = await db.query(
-            `DELETE FROM comppanies WHERE code = $1`,
+            `DELETE FROM companies WHERE code = $1`,
             [code]
         );
         return res.json({ status: "deleted" });
