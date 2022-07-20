@@ -3,7 +3,7 @@ let db = require("../db");
 const ExpressError = require("../expressError");
 const router = new express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res, next) => {
     try {
         const results = await db.query(
             `SELECT * FROM invoices`
@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
     }
 })
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res, next) => {
     try {
         const { id } = req.params;
         const results = await db.query(
@@ -47,7 +47,7 @@ router.get("/:id", (req, res) => {
 })
 
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res, next) => {
     try {
         const { comp_code, amt } = req.body;
         const results = await db.query(
@@ -62,7 +62,7 @@ router.post("/", (req, res) => {
     }
 })
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res, next) => {
     try {
         const { id } = req.params;
         const { amt } = req.body;
@@ -81,10 +81,10 @@ router.put("/:id", (req, res) => {
     }
 })
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res, next) => {
     try {
         const { id } = req.params;
-        const results = await.db.query(
+        const results = await db.query(
             `DELETE FROM invoices WHERE id = $1`, [id]
         );
         return res.json({ status: "deleted" });

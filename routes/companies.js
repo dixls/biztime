@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
     }
 });
 
-router.get("/:code", (req, res) => {
+router.get("/:code", async (req, res, next) => {
     try {
         const { code } = req.params;
         const results = await db.query(
@@ -43,7 +43,7 @@ router.get("/:code", (req, res) => {
     }
 });
 
-router.post("/", (res, res) => {
+router.post("/", async (res, res, next) => {
     try {
         const { code, name, description } = req.body;
         const results = await db.query(
@@ -58,7 +58,7 @@ router.post("/", (res, res) => {
     }
 });
 
-router.put("/:code", (req, res) => {
+router.put("/:code", async (req, res, next) => {
     try {
         const { code } = req.params;
         const { name, description } = req.body;
@@ -77,7 +77,7 @@ router.put("/:code", (req, res) => {
     }
 });
 
-router.delete("/:code", (req, res) => {
+router.delete("/:code", async (req, res, next) => {
     try {
         const { code } = req.params;
         const results = await db.query(
