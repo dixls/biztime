@@ -17,14 +17,16 @@ router.get("/:code", async (req, res, next) => {
     try {
         const { code } = req.params;
         const results = await db.query(
-            `SELECT code, name, description, id, comp_code, amt, paid, add_date, paid_date 
-            FROM companies
-            INNER JOIN invoices ON code = comp_code;
+            `SELECT c.code, c.name, c.description, i.id, i.comp_code, i.amt, i.paid, i.add_date, i.paid_date, ind.name 
+            FROM companies as c
+            INNER JOIN invoices as i ON c.code = i.comp_code
+            INNER JOIN comp_ind as ci ON c.code = ci.comp_code
+            INNER JOIN industries as ind ON ci.ind_code = ind.code
             WHERE code = "$1"`,
             [code]);
         if (results.rows.length === 0) {
             throw new ExpressError(`No company found with code: ${code}`, 404);
-        }
+        };
         const data = results.rows[0];
         const company = {
             code: data.code,
@@ -36,8 +38,11 @@ router.get("/:code", async (req, res, next) => {
                 paid: data.paid,
                 add_date: data.add_date,
                 paid_data: data.paid_data
+            },
+            industries: {
+                name: data.ind.name
             }
-        }
+        };
         return res.json({ "company": company });
     } catch (e) {
         return next(e);

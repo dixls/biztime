@@ -1,5 +1,8 @@
 \c biztime
 
+DROP TABLE IF EXISTS industries;
+DROP TABLE IF EXISTS comp_ind;
+
 CREATE TABLE industries (
     code text PRIMARY KEY,
     name text NOT NULL UNIQUE
@@ -7,7 +10,7 @@ CREATE TABLE industries (
 
 CREATE TABLE comp_ind (
     comp_code text NOT NULL REFERENCES companies ON DELETE CASCADE,
-    ind_code text NOT NULL REFERENCES companies ON DELETE CASCADE,
+    ind_code text NOT NULL REFERENCES industries ON DELETE CASCADE,
     PRIMARY KEY (comp_code, ind_code)
 );
 
