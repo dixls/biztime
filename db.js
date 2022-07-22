@@ -1,5 +1,4 @@
 /** Database setup for BizTime. */
-
 const { Client } = require("pg");
 
 let DB_URI;
