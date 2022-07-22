@@ -4,7 +4,7 @@ let db = require("../db");
 const ExpressError = require("../expressError");
 const router = new express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res, next) => {
     try {
         const results = await db.query('SELECT code, name FROM companies');
         return res.json({ companies: results.rows });
@@ -49,7 +49,7 @@ router.get("/:code", async (req, res, next) => {
     }
 });
 
-router.post("/", async (res, res, next) => {
+router.post("/", async (req, res, next) => {
     try {
         const { name, description } = req.body;
         const code = slugify(name);

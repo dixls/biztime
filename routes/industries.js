@@ -4,9 +4,9 @@ let db = require("../db");
 const ExpressError = require("../expressError");
 const router = new express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res, next) => {
     try {
-        const results = await db.query('SELECT i.code, i.name, c.code as "company code" FROM industries as i INNER JOIN comp_ind as ci ON i.code = ind_code INNER JOIN companies as c on comp_code = c.code;');
+        const results = await db.query(`SELECT i.code, i.name, c.code as "company code" FROM industries as i INNER JOIN comp_ind as ci ON i.code = ind_code INNER JOIN companies as c on comp_code = c.code`);
         return res.json({ industries: results.rows });
     } catch (e) {
         return next(e);
